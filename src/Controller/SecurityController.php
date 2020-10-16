@@ -5,32 +5,15 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     /**
-     * @var AdapterInterface
-     */
-    private AdapterInterface $cache;
-
-    public function __construct(AdapterInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-    /**
      * @Route("/login", name="login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $targetPath = $this->cache->getItem('loginTargetPath');
-        if (false === $targetPath->isHit()) {
-            $targetPath->set($this->generateUrl('dashboard'));
-            $targetPath->expiresAfter(new \DateInterval('P7D'));
-            $this->cache->save($targetPath);
-        }
-
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -58,7 +41,7 @@ class SecurityController extends AbstractController
 
             // the URL users are redirected to after the login (default: '/admin')
 //            'target_path' => $this->generateUrl('admin_dashboard'),
-            'target_path' => $targetPath->get(),
+            'target_path' => $this->generateUrl('dashboard'),
 
             // the label displayed for the username form field (the |trans filter is applied to it)
             'username_label' => 'Your username',
