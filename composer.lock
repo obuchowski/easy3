@@ -7120,7 +7120,9 @@
     "platform": {
         "php": ">=7.2.5",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-oauth": "*",
+        "ext-redis": "*"
     },
     "platform-dev": []
 }
