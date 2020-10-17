@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ext-oauth": "*",
         "ext-redis": "*",
+        "ext-bcmath": "*",
         "composer/package-versions-deprecated": "^1.11",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.1",
@@ -41,7 +42,8 @@
         "symfony/yaml": "5.1.*",
         "symfonycasts/reset-password-bundle": "^1.1",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "videlalvaro/php-amqplib": "^2.11"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",
