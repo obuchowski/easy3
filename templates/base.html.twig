@@ -1,12 +1,25 @@
+{% trans_default_domain translation_domain ?? 'messages' %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="generator" content="EasyAdmin" />
+
+    <title>{{ block('title')|striptags|raw }}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
+    {% endblock %}
+</head>
+
+<body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
+{% block body %}{% endblock body %}
+</body>
 </html>

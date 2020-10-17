@@ -1,13 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Register{% endblock %}
+{% block body_class 'page-login' %}
 
 {% block body %}
-    {% for flashError in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-    {% endfor %}
+    {% set page_title = block('title') %}
+    <div class="login-wrapper">
+        <header class="main-header mb-4">
+            <div id="header-logo">
+                {% block header_logo %}
+                    {% if page_title %}
+                        {% if ea is defined %}
+                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+                                {{ page_title|raw }}
+                            </a>
+                        {% else %}
+                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
+                                {{ page_title|raw }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endblock header_logo %}
+            </div>
+        </header>
 
-    <h1>Register</h1>
+
+    {% for flashError in app.flashes('verify_email_error') %}
+        <div class="w-100 alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
 
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.email) }}
@@ -18,4 +38,5 @@
 
         <button type="submit" class="btn">Register</button>
     {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}
