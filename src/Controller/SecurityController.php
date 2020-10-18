@@ -14,13 +14,13 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('dashboard');
-        }
+//        if ($this->getUser()) {
+//            return $this->redirectToRoute('dashboard');
+//        }
 
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-        return $this->render('security/login.html.twig', [
+        $error = null; // $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = ''; //$authenticationUtils->getLastUsername();
+        $response = $this->render('security/login.html.twig', [
             // parameters usually defined in Symfony login forms
             'error' => $error,
             'last_username' => $lastUsername,
@@ -59,6 +59,19 @@ class SecurityController extends AbstractController
 //            'password_parameter' => 'my_custom_password_field',
             'password_parameter' => '_password',
         ]);
+
+        $response->setPublic();
+        $response->setMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        return $response;
+    }
+
+    /**
+     * @Route("/hinclude", name="hinclude")
+     */
+    public function hinclude()
+    {
+        return $this->render('hinclude.html.twig');
     }
 
     /**

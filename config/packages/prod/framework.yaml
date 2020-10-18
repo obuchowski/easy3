@@ -1,3 +1,4 @@
 framework:
   session:
     handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+#    handler_id: null
