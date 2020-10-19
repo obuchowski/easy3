@@ -5,7 +5,7 @@
 {% extends ea is defined ? ea.templatePath('layout') : 'base.html.twig' %}
 {% trans_default_domain ea is defined ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
 {% block javascripts %}
-    <script src="/hinclude.js" async type="text/javascript"></script>
+    <script src="/assets/hinclude.js" async type="text/javascript"></script>
 {% endblock %}
 {% block body_class 'page-login' %}
 {% block title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
