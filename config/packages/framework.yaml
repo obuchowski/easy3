@@ -18,3 +18,8 @@ framework:
 
     fragments:
         hinclude_default_template: hinclude.html.twig
+
+parameters:
+    redis_url: '%env(REDIS_URL)%'
+    redis_opts:
+        lazy: 0
