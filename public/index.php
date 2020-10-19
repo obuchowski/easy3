@@ -5,9 +5,10 @@ use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
-
 if (!empty($_GET['phpinfo'])) {
-    phpinfo(); exit;
+    phpinfo();
+    var_dump(getenv());
+    exit;
 }
 
 require dirname(__DIR__).'/vendor/autoload.php';

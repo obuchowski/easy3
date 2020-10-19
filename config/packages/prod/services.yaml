@@ -8,7 +8,15 @@ services:
           - '%env(int:REDIS_PORT)%'
       - auth:
           - '%env(REDIS_PASSWORD)%'
+#  RedisAdapter:
+#    class: Symfony\Component\Cache\Adapter\RedisAdapter
+#    calls:
+#      - createConnection:
+#          - '%env(REDIS_URL)%'
+#    arguments:
+#      - '@Redis'
   Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
     arguments:
+#      - '@=service("RedisAdapter").createConnection()'
       - '@Redis'
       - { prefix: 'sess_' }
