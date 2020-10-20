@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
         ]);
 
         $response->setPublic();
-        $response->setMaxAge(3600);
+        $response->setMaxAge(86400);
         $response->headers->addCacheControlDirective('must-revalidate', true);
         return $response;
     }
