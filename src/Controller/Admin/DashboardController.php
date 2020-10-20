@@ -11,6 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractDashboardController
 {
     /**
+     * @Route("")
+     */
+    public function default(): Response
+    {
+        return $this->redirectToRoute('dashboard');
+    }
+
+    /**
      * @Route("/dashboard", name="dashboard")
      */
     public function index(): Response
