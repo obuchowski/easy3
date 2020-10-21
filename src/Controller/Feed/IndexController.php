@@ -59,8 +59,8 @@ class IndexController extends AbstractController
             $fileContent->set(stream_get_contents($fp));
             fclose($fp);
 
-//            $fileContent->expiresAfter(new \DateInterval('P7D'));
-            $fileContent->expiresAfter(null);
+            $fileContent->expiresAfter(new \DateInterval('P1D'));
+//            $fileContent->expiresAfter(null);
             $this->cache->save($fileContent);
         }
 

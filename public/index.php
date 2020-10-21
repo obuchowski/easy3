@@ -17,22 +17,25 @@ require dirname(__DIR__).'/vendor/autoload.php';
 
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
-
     Debug::enable();
 }
 
 $trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? $_ENV['TRUSTED_PROXIES'] ?? false;
 $trustedProxies = $trustedProxies ? explode(',', $trustedProxies) : [];
-if($_SERVER['APP_ENV'] == 'prod') $trustedProxies[] = $_SERVER['REMOTE_ADDR'];
+
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
+if ($_SERVER['APP_ENV'] === 'prod') {
+    $trustedProxies[] = $_SERVER['REMOTE_ADDR'];
+    $kernel = new HttpCache($kernel);
+}
+
 if($trustedProxies) {
     Request::setTrustedProxies($trustedProxies, Request::HEADER_X_FORWARDED_AWS_ELB);
 }
-
 if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
 
-$kernel = new HttpCache(new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']));
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
