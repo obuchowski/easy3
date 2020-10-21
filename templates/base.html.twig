@@ -7,13 +7,10 @@
     <meta name="robots" content="index, follow" />
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="generator" content="EasyAdmin" />
-
     <title>{{ block('title')|striptags|raw }}</title>
-
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('bundles/easyadmin/app.css') }}">
     {% endblock %}
-
     {% block javascripts %}
         <script src="{{ asset('bundles/easyadmin/app.js') }}"></script>
     {% endblock %}
@@ -21,5 +18,6 @@
 
 <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
 {% block body %}{% endblock body %}
+{% block before_body_end %}{% endblock before_body_end %}
 </body>
 </html>

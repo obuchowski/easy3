@@ -17,7 +17,7 @@ framework:
         log: true
 
     fragments:
-        hinclude_default_template: hinclude.html.twig
+        hinclude_default_template: hinclude/default.html
 
 parameters:
     redis_url: '%env(REDIS_URL)%'

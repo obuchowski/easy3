@@ -3,10 +3,8 @@
    be used in a EasyAdmin Dashboard controller, where 'ea' is defined
    or from any other Symfony controller, where 'ea' is not defined #}
 {% extends ea is defined ? ea.templatePath('layout') : 'base.html.twig' %}
+{% block javascripts %}{% endblock %} {# don't include app.js #}
 {% trans_default_domain ea is defined ? ea.i18n.translationDomain : (translation_domain is defined ? translation_domain ?? 'messages') %}
-{% block javascripts %}
-    <script src="/assets/hinclude.js" async type="text/javascript"></script>
-{% endblock %}
 {% block body_class 'page-login' %}
 {% block title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
 {% block body %}
@@ -34,15 +32,11 @@
             </div>
         </header>
 
-        {% if error|default(false) %}
-            <div class="w-100 alert alert-danger">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
-
         <section class="content">
             <form method="post">
-                {{ render_hinclude(url('hinclude'), {default: ''}) }}
+                <div style="min-height: 45px">
+                    {{ render_hinclude(url('app_login_dynamic'), {attributes: {evaljs: 'true'}}) }}
+                </div>
 
                 <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
 
@@ -79,4 +73,7 @@
             </form>
         </section>
     </div>
+{% endblock %}
+{% block before_body_end %}
+    <script>{{ hinclude_inline|raw }}</script>
 {% endblock %}

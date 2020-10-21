@@ -12,21 +12,9 @@ class SecurityController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(): Response
     {
-//        if ($this->getUser()) {
-//            return $this->redirectToRoute('dashboard');
-//        }
-
-        $error = null; // $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = ''; //$authenticationUtils->getLastUsername();
         $response = $this->render('security/login.html.twig', [
-            // parameters usually defined in Symfony login forms
-            'error' => $error,
-            'last_username' => $lastUsername,
-
-            // OPTIONAL parameters to customize the login form:
-
             // the translation_domain to use (define this option only if you are
             // rendering the login template in a regular Symfony controller; when
             // rendering it from an EasyAdmin Dashboard this is automatically set to
@@ -38,26 +26,13 @@ class SecurityController extends AbstractController
             // it from an EasyAdmin Dashboard this is automatically set as the Dashboard title)
             'page_title' => 'ACME login',
 
-            // the string used to generate the CSRF token. If you don't define
-            // this parameter, the login form won't include a CSRF token
-            'csrf_token_intention' => 'authenticate',
-
-            // the label displayed for the username form field (the |trans filter is applied to it)
             'username_label' => 'Your username',
-
-            // the label displayed for the password form field (the |trans filter is applied to it)
             'password_label' => 'Your password',
-
-            // the label displayed for the Sign In form button (the |trans filter is applied to it)
             'sign_in_label' => 'Log in',
-
-            // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
-//            'username_parameter' => 'my_custom_username_field',
             'username_parameter' => '_username',
-
-            // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
-//            'password_parameter' => 'my_custom_password_field',
             'password_parameter' => '_password',
+
+            'hinclude_inline' => file_get_contents('assets/hinclude.min.js')
         ]);
 
         $response->setPublic();
@@ -67,11 +42,19 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/hinclude", name="hinclude")
+     * @Route("/login_dynamic", name="app_login_dynamic")
      */
-    public function hinclude()
+    public function loginDynamic(AuthenticationUtils $authenticationUtils)
     {
-        return $this->render('hinclude.html.twig');
+        if (!$isAuthorized = (bool)$this->getUser()) {
+            $error = $authenticationUtils->getLastAuthenticationError();
+            $lastUsername = $authenticationUtils->getLastUsername();
+        }
+        return $this->render('hinclude/login.html.twig', [
+            'error' => $error ?? false,
+            'last_username' => $lastUsername ?? false,
+            'is_authorized' => $isAuthorized //return $this->redirectToRoute('dashboard') via JS
+        ]);
     }
 
     /**

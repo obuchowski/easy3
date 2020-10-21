@@ -1,0 +1,15 @@
+{% if is_authorized %}
+    <script>
+        window.location.href = "{{ url('dashboard') }}";
+    </script>
+{% else %}
+    {% if error %}
+        <div class="w-100 alert alert-danger">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    <script>
+        document.getElementById("username").value = "{{ last_username }}";
+    </script>
+{% endif %}
