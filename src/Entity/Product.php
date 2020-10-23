@@ -122,14 +122,14 @@ class Product
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): bool
     {
         return $this->status;
     }
 
     public function setStatus($status): self
     {
-        $this->status = (int)$status;
+        $this->status = (bool)$status;
 
         return $this;
     }
