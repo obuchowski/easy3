@@ -13,7 +13,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 
 class ProductCrudController extends AbstractCrudController
 {
@@ -33,13 +35,14 @@ class ProductCrudController extends AbstractCrudController
             ->overrideTemplate('crud/index', 'admin/customizations/product_list.html.twig');
     }
 
+    /* @TODO CHANGE field types */
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('status'))
+            ->add(BooleanFilter::new('status'))
             ->add('name')
             ->add('sku')
-            ->add('price');
+            ->add(NumericFilter::new ('price'));
     }
 
     public function configureFields(string $pageName): iterable
