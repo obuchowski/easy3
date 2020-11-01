@@ -20,7 +20,7 @@ class ProductOptionRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return ProductOption[] Returns an array of ProductOption objects
+    //  * @return Product[] Returns an array of Product objects
     //  */
     /*
     public function findByExampleField($value)
@@ -36,16 +36,24 @@ class ProductOptionRepository extends ServiceEntityRepository
     }
     */
 
-
-    public function findOneBySomeField($value): ?ProductOption
+    /*
+    public function findOneBySomeField($value): ?Product
     {
         return $this->createQueryBuilder('p')
-            ->in
             ->andWhere('p.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
+    */
 
+    public function findByUserId($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }

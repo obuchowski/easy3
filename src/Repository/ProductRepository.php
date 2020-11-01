@@ -47,4 +47,13 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByUserId($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }
