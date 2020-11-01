@@ -2,8 +2,8 @@
 {% block global_actions %}
     {{parent()}}
     <div class="button-action">
-{#        <a class="btn btn-primary" href="{{path('easyadmin', {action: 'generate', entity: 'Product'}) }}" target="_self">#}
-{#            {{"Generate"|trans() }}#}
-{#        </a>#}
+        <a class="btn btn-primary" href="{{ path('app_generate') }}" target="_self">
+            {{"Generate"|trans() }}
+        </a>
     </div>
 {% endblock %}

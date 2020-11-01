@@ -3,9 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,12 +58,31 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl('menu.about.issues', 'fab fa-github', 'https://github.com/EasyCorp/EasyAdminBundle/issues')->setLinkTarget('_blank')->setLinkRel('noreferrer');
     }
 
+    /**
+     * @Route("/dashboard/generate", name="app_generate")
+     * @param AdminContext $context
+     */
+    public function generateAction(AdminContext $context): Response
+    {
+        $retrieveProducts = new \App\Model\RetrieveProducts(
+            $this->get('doctrine')->getManagerForClass(Product::class),
+            $context->getUser()
+        );
 
-    // @TODO section
+        $retrieveProducts->execute();
+        $this->addFlash('success', 'Products are collected!');
 
+        /* @TODO */
+        return $this->redirectToRoute('dashboard', [
+            'crudAction' => 'index',
+            'menuIndex' => 0,
+            'crudId' => '363eef3',
+            'submenuIndex' => 0]);
+    }
 
-    protected $userId;
-
+    /**
+     * @TODO apply for EA3
+     */
     protected function initialize(Request $request)
     {
         $this->userId = $this->getUser()->getId();
@@ -75,6 +97,9 @@ class DashboardController extends AbstractDashboardController
         }
     }
 
+    /**
+     * @TODO apply for EA3
+     */
     protected function isActionAllowed($actionName)
     {
         $userCheck = true;
@@ -85,14 +110,5 @@ class DashboardController extends AbstractDashboardController
         }
 
         return $userCheck && parent::isActionAllowed($actionName);
-    }
-
-    public function generateAction()
-    {
-        $retrieveProducts = new \App\Model\RetrieveProducts($this->em, $this->getUser());
-        $retrieveProducts->execute();
-        $this->addFlash('success', 'Products are collected!');
-        return $this->listAction();
-//        return $this->redirect($this->generateUrl('easyadmin', ['action' => 'list', 'entity' => $this->entity['name']]));
     }
 }

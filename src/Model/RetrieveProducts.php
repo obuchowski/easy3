@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Entity\Product;
+use App\Entity\ProductOption;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 
@@ -22,25 +24,25 @@ class RetrieveProducts
     protected $accessToken;
     protected $accessTokenSecret;
 
-    protected $pageSize = 2;
-    protected $threads = 1;
+    protected $pageSize = 10;
+    protected $threads = 2;
 
     public function __construct(EntityManager $em, User $user)
     {
         $this->em = $em;
         $this->user = $user;
-        $this->consumerKey = 'iqhiu54ke1fi1glqxvx5bp596511ueet';
-        $this->consumerSecret = 'h1kdibzwqfcokoku9m8puaad5njc5nsi';
-        $this->accessToken = '6vqspslfsfiv8veilrl2ixxqy97xvwya';
-        $this->accessTokenSecret = 'vzcv1spty48wqei3wnxlmxiuzm9fgdei';
+        $this->consumerKey = 'j7hsqrssetwk5keb4kdzyhq7eggmcqbo';
+        $this->consumerSecret = 'ja2z5f2cf3g0247f0x4zpqqioccncfmg';
+        $this->accessToken = 'alo7nob9uc6kqf4a6y5jnardomo4q1pf';
+        $this->accessTokenSecret = 'hxcam078kc3u7r3mngtoydlr9nuinnw2';
     }
 
     public function execute()
     {
         $attrCodes = [];
-        $fields = $this->em->getClassMetadata(\App\Entity\Product::class)->getFieldNames();
+        $fields = $this->em->getClassMetadata(Product::class)->getFieldNames();
 
-        $products = $this->getProducts()['items'];
+        $products = $this->getProducts()['items'] ?? [];
 
         foreach ($products as &$product) {
             unset($product['id']);
@@ -51,7 +53,7 @@ class RetrieveProducts
                         $productAttrCodes = \array_map(static function (array $attribute): string {
                             return $attribute['attribute_code'];
                         }, $value);
-                        $attrCodes = \array_unique(array_merge($attrCodes, $productAttrCodes));
+                        $attrCodes = \array_unique(\array_merge($attrCodes, $productAttrCodes));
                     }
 
                     unset($product[$key]);
@@ -60,19 +62,27 @@ class RetrieveProducts
             }
 
             $product['options_json'] = \json_encode($product['options_json']);
-            $productEntity = new \App\Entity\Product($product);
+            $productEntity = new Product($product);
             $productEntity->setUser($this->user);
             $this->em->persist($productEntity);
         }
 
         $options = $this->getOptions($attrCodes);
         foreach ($options as $option) {
-            $optionEntity = new \App\Entity\ProductOption($option);
+            $optionEntity = new ProductOption($option);
             $optionEntity->setUser($this->user);
             $this->em->persist($optionEntity);
         }
 
-        $this->getCategories();
+        /* @TODO */
+        $categories = $this->getCategories();
+
+        foreach ($this->em->getRepository(Product::class)->findByUserId($this->user->getId()) as $currentProduct) {
+            $this->em->remove($currentProduct);
+        }
+        foreach ($this->em->getRepository(ProductOption::class)->findByUserId($this->user->getId()) as $currentProductOption) {
+            $this->em->remove($currentProductOption);
+        }
 
         $this->em->flush();
 
@@ -83,43 +93,43 @@ class RetrieveProducts
     {
         $result = [];
         $curlArr = [];
-        $curlMaster = curl_multi_init();
+        $curlMaster = \curl_multi_init();
         $url = 'http://magento.test/rest/all/V1/products';
 
         for ($i = 0; $i < $this->threads; $i++) {
             $urlParams = [
                 'searchCriteria[filterGroups][0][filters][0][field]' => 'visibility',
                 'searchCriteria[filterGroups][0][filters][0][value]' => '1',
-                'searchCriteria[filterGroups][0][filters][0][conditionType]' => 'eq',
+                'searchCriteria[filterGroups][0][filters][0][conditionType]' => 'neq',
                 'searchCriteria[pageSize]' => $this->pageSize,
                 'searchCriteria[currentPage]' => $i + 1
             ];
-            $data = array_merge($this->getData(), $urlParams);
+            $data = \array_merge($this->getData(), $urlParams);
 
             //url should not containt params on the sign step
             $this->sign('GET', $url, $data);
 
             //modify url after sign
             if ($urlParams) {
-                $url .= '?' . http_build_query($urlParams, '', '&');
+                $url .= '?' . \http_build_query($urlParams, '', '&');
             }
 
-            $curlArr[$i] = curl_init($url);
-            curl_setopt_array($curlArr[$i], [
+            $curlArr[$i] = \curl_init($url);
+            \curl_setopt_array($curlArr[$i], [
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url,
                 CURLOPT_HTTPHEADER => [
-                    'Authorization: OAuth ' . http_build_query($data, '', ',')
+                    'Authorization: OAuth ' . \http_build_query($data, '', ',')
                 ]
             ]);
-            curl_multi_add_handle($curlMaster, $curlArr[$i]);
+            \curl_multi_add_handle($curlMaster, $curlArr[$i]);
         }
         do {
-            curl_multi_exec($curlMaster, $running);
+            \curl_multi_exec($curlMaster, $running);
         } while ($running > 0);
         for ($i = 0; $i < $this->threads; $i++) {
-            $response = curl_multi_getcontent($curlArr[$i]);
-            $result = array_merge_recursive($result, json_decode($response, true));
+            $response = \curl_multi_getcontent($curlArr[$i]);
+            $result = \array_merge_recursive($result, (array)\json_decode($response, true));
         }
 
         return $result;
@@ -129,7 +139,7 @@ class RetrieveProducts
     {
         $result = [];
         $curlArr = [];
-        $curlMaster = curl_multi_init();
+        $curlMaster = \curl_multi_init();
 
         foreach ($attrCodes as $i => $option) {
             $data = $this->getData();
@@ -140,7 +150,7 @@ class RetrieveProducts
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url,
                 CURLOPT_HTTPHEADER => [
-                    'Authorization: OAuth ' . http_build_query($data, '', ',')
+                    'Authorization: OAuth ' . \http_build_query($data, '', ',')
                 ]
             ]);
             \curl_multi_add_handle($curlMaster, $curlArr[$i]);
@@ -166,7 +176,7 @@ class RetrieveProducts
 
     protected function getCategories()
     {
-        $curlMaster = curl_multi_init();
+        $curlMaster = \curl_multi_init();
         $url = 'http://magento.test/rest/all/V1/categories';
 
         $data = $this->getData();
@@ -187,7 +197,7 @@ class RetrieveProducts
         } while ($running > 0);
 
         $result = \curl_multi_getcontent($curl);
-        $result = \json_decode($result, true);
+        $result = (array)\json_decode($result, true);
         return $result;
     }
 
@@ -198,18 +208,15 @@ class RetrieveProducts
     {
         return [
             'oauth_consumer_key' => $this->consumerKey,
-            'oauth_nonce' => md5(uniqid(rand(), true)), //@todo change
+            'oauth_nonce' => \md5(\random_bytes(21)),
             'oauth_signature_method' => 'HMAC-SHA1',
-            'oauth_timestamp' => time(),
+            'oauth_timestamp' => \time(),
             'oauth_token' => $this->accessToken,
             'oauth_version' => '1.0',
         ];
     }
 
     /**
-     * @TODO
-     * use http://www.inanzzz.com/index.php/post/zhud/securing-symfony-api-with-oauth1 instead of zend #apt-get install php-oauth #$oauth->generateSignature
-     *
      * @param $method
      * @param $url
      * @param $data
@@ -217,11 +224,10 @@ class RetrieveProducts
      */
     protected function sign($method, $url, &$data): self
     {
-//        $hmac = new \Laminas\OAuth\Signature\Hmac($this->consumerSecret, $this->accessTokenSecret, 'SHA1');
-//        $data['oauth_signature'] = $hmac->sign($data, $method, $url);
-
-        $oauth = new \OAuth($this->consumerSecret, $this->accessTokenSecret, 'SHA1');
-        $data['oauth_signature'] = $oauth->generateSignature($method, $url, $data);
+        $hmac = new \Laminas\OAuth\Signature\Hmac($this->consumerSecret, $this->accessTokenSecret, 'SHA1');
+        $data['oauth_signature'] = $hmac->sign($data, $method, $url);
+//        $oauth = new \OAuth($this->consumerKey, $this->consumerSecret, 'SHA1');
+//        $data['oauth_signature'] = $oauth->generateSignature($method, $url);
         return $this;
     }
 
