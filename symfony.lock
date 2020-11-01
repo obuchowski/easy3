@@ -2,6 +2,9 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99"
     },
+    "container-interop/container-interop": {
+        "version": "1.2.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -107,6 +110,39 @@
     },
     "egulias/email-validator": {
         "version": "2.1.22"
+    },
+    "laminas/laminas-config": {
+        "version": "3.3.0"
+    },
+    "laminas/laminas-crypt": {
+        "version": "3.3.1"
+    },
+    "laminas/laminas-escaper": {
+        "version": "2.6.1"
+    },
+    "laminas/laminas-http": {
+        "version": "2.13.0"
+    },
+    "laminas/laminas-i18n": {
+        "version": "2.10.3"
+    },
+    "laminas/laminas-loader": {
+        "version": "2.6.1"
+    },
+    "laminas/laminas-math": {
+        "version": "3.2.0"
+    },
+    "laminas/laminas-oauth": {
+        "version": "2.0.3"
+    },
+    "laminas/laminas-stdlib": {
+        "version": "3.2.1"
+    },
+    "laminas/laminas-uri": {
+        "version": "2.7.1"
+    },
+    "laminas/laminas-validator": {
+        "version": "2.13.4"
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"
