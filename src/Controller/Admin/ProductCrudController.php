@@ -72,8 +72,15 @@ class ProductCrudController extends AbstractCrudController
             ->setCustomOption(MoneyField::OPTION_STORED_AS_CENTS, false);
         $status = BooleanField::new('status')
             ->setCustomOption('renderAsSwitch', false);
-        $visibility = IntegerField::new('visibility');
-        $typeId = TextField::new('type_id');
+        $visibility = IntegerField::new('visibility')
+            ->formatValue(static function ($value) {
+                return $value === 1 ? 'Not Visible Individually'
+                    : $value === 2 ? 'Catalog'
+                    : $value === 3 ? 'Search'
+                    : 'Catalog, Search';
+            });
+
+        $typeId = TextField::new('type_id', 'Type');
         $createdAt = DateTimeField::new('created_at');
         $updatedAt = DateTimeField::new('updated_at');
         $optionsJson = TextareaField::new('options_json')
@@ -83,7 +90,7 @@ class ProductCrudController extends AbstractCrudController
             });
 
         if (Crud::PAGE_INDEX === $pageName)
-            return [$id, $status, $sku, $name, $visibility, $typeId, $price];
+            return [$id, $sku, $name, $visibility, $typeId, $price, $status];
         if (Crud::PAGE_DETAIL === $pageName)
             return [$id, $sku, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
         if (Crud::PAGE_NEW === $pageName)

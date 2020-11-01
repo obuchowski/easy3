@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Feed;
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -46,11 +47,13 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         $submenu1 = [
-            MenuItem::linkToCrud('Product List', 'fas fa-th-list', Product::class)->setDefaultSort(['id' => 'DESC']),
-            MenuItem::linkToCrud('Manage Feed', 'fas fa-plus-circle', Product::class)->setAction('new'),
+            MenuItem::linkToCrud('Demo Shop', 'fas fa-th-list', Product::class)->setDefaultSort(['original_id' => 'ASC']),
         ];
 
-        yield MenuItem::subMenu('Demo Shop', 'fas fa-shopping-basket')->setSubItems($submenu1);
+        yield MenuItem::subMenu('My Stores', 'fas fa-shopping-basket')->setSubItems($submenu1);
+        yield MenuItem::subMenu('My Feeds', 'fas fa-shopping-basket');
+
+        yield MenuItem::linkToCrud('New Google Feed', 'fas fa-plus-circle', Feed::class)->setAction('new');
 
         yield MenuItem::section('Resources', 'fas fa-folder-open');
         yield MenuItem::linkToUrl('Home', 'fas fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
