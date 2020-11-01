@@ -62,7 +62,6 @@ class RetrieveProducts
                 }
             }
 
-            $product['options_json'] = \json_encode($product['options_json']);
             $productEntity = new Product($product);
             $productEntity->setUser($this->user);
             $this->em->persist($productEntity);

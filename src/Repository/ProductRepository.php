@@ -56,4 +56,14 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+//    public function deleteByUserId($id)
+//    {
+//        $query = $this->createQueryBuilder('p')
+//            ->delete(Product::class, 'p')
+//            ->andWhere('p.user = :id')
+//            ->setParameter('id', $id)
+//            ->getQuery()
+//            ->getResult();
+//    }
 }

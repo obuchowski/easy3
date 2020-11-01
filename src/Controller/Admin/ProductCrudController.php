@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -83,16 +84,17 @@ class ProductCrudController extends AbstractCrudController
         $typeId = TextField::new('type_id', 'Type');
         $createdAt = DateTimeField::new('created_at');
         $updatedAt = DateTimeField::new('updated_at');
+        $panel1 = FormField::addPanel('Test segment');
         $optionsJson = TextareaField::new('options_json')
             ->setCustomOption('renderAsHtml', true)
             ->formatValue(static function ($value) {
-                return \str_replace(' ', '&nbsp;', \json_encode(\json_decode($value), JSON_PRETTY_PRINT));
+                return \str_replace(' ', '&nbsp;', $value);
             });
 
         if (Crud::PAGE_INDEX === $pageName)
             return [$id, $sku, $name, $visibility, $typeId, $price, $status];
         if (Crud::PAGE_DETAIL === $pageName)
-            return [$id, $sku, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
+            return [$id, $sku, $panel1, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
         if (Crud::PAGE_NEW === $pageName)
             return [$sku, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
         if (Crud::PAGE_EDIT === $pageName)

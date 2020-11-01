@@ -62,7 +62,7 @@ class Product
     private $updated_at;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="json",nullable=true,options={"jsonb"=true})
      */
     private $options_json;
 
@@ -206,12 +206,12 @@ class Product
         return $this;
     }
 
-    public function getOptionsJson(): ?string
+    public function getOptionsJson(): string
     {
-        return $this->options_json;
+        return \json_encode($this->options_json, JSON_PRETTY_PRINT);
     }
 
-    public function setOptionsJson(?string $options_json): self
+    public function setOptionsJson(array $options_json): self
     {
         $this->options_json = $options_json;
 
