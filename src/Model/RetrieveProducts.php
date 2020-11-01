@@ -24,8 +24,8 @@ class RetrieveProducts
     protected $accessToken;
     protected $accessTokenSecret;
 
-    protected $pageSize = 10;
-    protected $threads = 2;
+    protected $pageSize = 500;
+    protected $threads = 1;
 
     public function __construct(EntityManager $em, User $user)
     {
@@ -45,6 +45,7 @@ class RetrieveProducts
         $products = $this->getProducts()['items'] ?? [];
 
         foreach ($products as &$product) {
+            $product['original_id'] = $product['id'];
             unset($product['id']);
             $product['options_json'] = [];
             foreach ($product as $key => &$value) {

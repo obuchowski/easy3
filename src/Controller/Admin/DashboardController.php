@@ -46,16 +46,16 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         $submenu1 = [
-            MenuItem::linkToCrud('menu.product.list', 'fas fa-th-list', Product::class)->setDefaultSort(['created_at' => 'DESC']),
-            MenuItem::linkToCrud('menu.product.add', 'fas fa-plus-circle', Product::class)->setAction('new'),
+            MenuItem::linkToCrud('Product List', 'fas fa-th-list', Product::class)->setDefaultSort(['id' => 'DESC']),
+            MenuItem::linkToCrud('Manage Feed', 'fas fa-plus-circle', Product::class)->setAction('new'),
         ];
 
-        yield MenuItem::subMenu('menu.product', 'fas fa-shopping-basket')->setSubItems($submenu1);
+        yield MenuItem::subMenu('Demo Shop', 'fas fa-shopping-basket')->setSubItems($submenu1);
 
-        yield MenuItem::section('menu.about', 'fas fa-folder-open');
-        yield MenuItem::linkToUrl('menu.about.home', 'fas fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
-        yield MenuItem::linkToUrl('menu.about.docs', 'fas fa-book', 'https://symfony.com/doc/current/bundles/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
-        yield MenuItem::linkToUrl('menu.about.issues', 'fab fa-github', 'https://github.com/EasyCorp/EasyAdminBundle/issues')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::section('Resources', 'fas fa-folder-open');
+        yield MenuItem::linkToUrl('Home', 'fas fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::linkToUrl('Docs', 'fas fa-book', 'https://symfony.com/doc/current/bundles/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::linkToUrl('Issues', 'fab fa-github', 'https://github.com/EasyCorp/EasyAdminBundle/issues')->setLinkTarget('_blank')->setLinkRel('noreferrer');
     }
 
     /**

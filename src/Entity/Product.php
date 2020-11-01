@@ -17,6 +17,11 @@ class Product
     private $id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $original_id;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $sku;
@@ -27,7 +32,7 @@ class Product
     private $name;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private $price;
 
@@ -84,6 +89,19 @@ class Product
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+
+    public function getOriginalId(): ?int
+    {
+        return $this->original_id;
+    }
+
+    public function setOriginalId(int $id): self
+    {
+        $this->original_id = $id;
+
+        return $this;
     }
 
     public function getSku(): ?string
