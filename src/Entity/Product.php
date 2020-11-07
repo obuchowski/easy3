@@ -37,7 +37,7 @@ class Product
     private $price;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="boolean")
      */
     private $status;
 
@@ -67,10 +67,10 @@ class Product
     private $options_json;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Store")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    private $store;
 
     public function __construct(array $data = null)
     {
@@ -90,7 +90,6 @@ class Product
     {
         return $this->id;
     }
-
 
     public function getOriginalId(): ?int
     {
@@ -218,14 +217,14 @@ class Product
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getStore(): ?Store
     {
-        return $this->user;
+        return $this->store;
     }
 
-    public function setUser(?User $user): self
+    public function setStore(?Store $store): self
     {
-        $this->user = $user;
+        $this->store = $store;
 
         return $this;
     }

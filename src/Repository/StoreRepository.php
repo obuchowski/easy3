@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\Feed;
+use App\Entity\Store;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Feed|null find($id, $lockMode = null, $lockVersion = null)
- * @method Feed|null findOneBy(array $criteria, array $orderBy = null)
- * @method Feed[]    findAll()
- * @method Feed[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Store|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Store|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Store[]    findAll()
+ * @method Store[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FeedRepository extends ServiceEntityRepository
+class StoreRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Feed::class);
+        parent::__construct($registry, Store::class);
     }
 
     public function findByUserId($id)

@@ -27,10 +27,10 @@ class ProductOption
     private $label;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Store")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    private $store;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -80,14 +80,14 @@ class ProductOption
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getStore(): ?Store
     {
-        return $this->user;
+        return $this->store;
     }
 
-    public function setUser(?User $user): self
+    public function setStore(?Store $store): self
     {
-        $this->user = $user;
+        $this->store = $store;
 
         return $this;
     }

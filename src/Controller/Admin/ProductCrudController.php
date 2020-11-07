@@ -53,13 +53,10 @@ class ProductCrudController extends AbstractCrudController
         return $actions;
     }
 
-    /* @TODO CHANGE field types */
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
             ->add(BooleanFilter::new('status'))
-            ->add('name')
-            ->add('sku')
             ->add(NumericFilter::new ('price'));
     }
 

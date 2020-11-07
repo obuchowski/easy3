@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use App\Entity\Feed;
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -46,19 +47,24 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        $submenu1 = [
-            MenuItem::linkToCrud('Demo Shop', 'fas fa-th-list', Product::class)->setDefaultSort(['original_id' => 'ASC']),
-        ];
+        yield MenuItem::linkToCrud('Add new Source', 'fas fa-plus-circle', Feed::class)
+            ->setAction('new');
+        foreach (['magento.test'] as $source) {
+            yield MenuItem::section($source, 'fas fa-shopping-basket');
+            foreach ([0] as $store) {
+                $source = [
+                    MenuItem::linkToCrud('Products', 'fas fa-th-list', Product::class)->setDefaultSort(['original_id' => 'ASC']),
+                    MenuItem::linkToCrud('Categories', 'fas fa-th-list', Category::class)->setDefaultSort(['id' => 'ASC']),
+                ];
+                yield  MenuItem::subMenu('Default', 'fas fa-shopping-basket')->setSubItems($source);
+            }
 
-        yield MenuItem::subMenu('My Stores', 'fas fa-shopping-basket')->setSubItems($submenu1);
+        }
+
+        yield MenuItem::section('Feeds', 'fas fa-folder-open');
         yield MenuItem::subMenu('My Feeds', 'fas fa-shopping-basket');
-
-        yield MenuItem::linkToCrud('New Google Feed', 'fas fa-plus-circle', Feed::class)->setAction('new');
-
-        yield MenuItem::section('Resources', 'fas fa-folder-open');
-        yield MenuItem::linkToUrl('Home', 'fas fa-home', 'https://github.com/EasyCorp/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
-        yield MenuItem::linkToUrl('Docs', 'fas fa-book', 'https://symfony.com/doc/current/bundles/EasyAdminBundle')->setLinkTarget('_blank')->setLinkRel('noreferrer');
-        yield MenuItem::linkToUrl('Issues', 'fab fa-github', 'https://github.com/EasyCorp/EasyAdminBundle/issues')->setLinkTarget('_blank')->setLinkRel('noreferrer');
+        yield MenuItem::linkToCrud('New Google Feed', 'fas fa-plus-circle', Feed::class)
+            ->setAction('new');
     }
 
     /**
