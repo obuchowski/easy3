@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\ProductOption;
+use App\Entity\Resource;
 use App\Entity\Store;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -17,9 +18,9 @@ class RetrieveProducts
     protected $em;
 
     /**
-     * @var User
+     * @var Resource
      */
-    protected $user;
+    protected $resource;
 
     protected $consumerKey;
     protected $consumerSecret;
@@ -30,10 +31,10 @@ class RetrieveProducts
     protected $pageSize = 500;
     protected $threads = 1;
 
-    public function __construct(EntityManager $em, User $user)
+    public function __construct(EntityManager $em, Resource $resource)
     {
         $this->em = $em;
-        $this->user = $user;
+        $this->resource = $resource;
         $this->consumerKey = 'j7hsqrssetwk5keb4kdzyhq7eggmcqbo';
         $this->consumerSecret = 'ja2z5f2cf3g0247f0x4zpqqioccncfmg';
         $this->accessToken = 'alo7nob9uc6kqf4a6y5jnardomo4q1pf';
@@ -46,7 +47,7 @@ class RetrieveProducts
         $attrCodes = [];
         $fields = $this->em->getClassMetadata(Product::class)->getFieldNames();
 
-        foreach ($this->em->getRepository(Store::class)->findByUserId($this->user->getId()) as $store) {
+        foreach ($this->em->getRepository(Store::class)->findByResourceId($this->resource->getId()) as $store) {
             $this->em->remove($store);
         }
         $stores = $this->getStores();
@@ -160,7 +161,7 @@ class RetrieveProducts
     }
 
     /**
-     * @return Store[]
+     * @return array
      */
     protected function getStores(): array
     {
@@ -197,7 +198,7 @@ class RetrieveProducts
             $optionEntity->setOriginalId($store['id']);
             $optionEntity->setCode($store['code']);
             $optionEntity->setTitle($store['name']);
-            $optionEntity->setUser($this->user);
+            $optionEntity->setResource($this->resource);
             $optionEntity->setUpdatedAt(new \DateTime());
             $this->em->persist($optionEntity);
             $stores[] = $optionEntity;

@@ -19,10 +19,10 @@ class StoreRepository extends ServiceEntityRepository
         parent::__construct($registry, Store::class);
     }
 
-    public function findByUserId($id)
+    public function findByResourceId($id)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.user = :id')
+            ->andWhere('p.resource = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();

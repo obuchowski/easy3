@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 
 class ProductCrudController extends AbstractCrudController
@@ -58,6 +59,7 @@ class ProductCrudController extends AbstractCrudController
         return $filters
             ->add(BooleanFilter::new('status'))
             ->add(NumericFilter::new ('price'));
+//            ->add(EntityFilter::new ('store'));
     }
 
     public function configureFields(string $pageName): iterable

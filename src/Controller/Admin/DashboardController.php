@@ -5,8 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Entity\Feed;
 use App\Entity\Product;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -47,16 +45,23 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        $em = $this->get('doctrine')->getManager();
         yield MenuItem::linkToCrud('Add new Source', 'fas fa-plus-circle', Feed::class)
             ->setAction('new');
-        foreach (['magento.test'] as $source) {
-            yield MenuItem::section($source, 'fas fa-shopping-basket');
-            foreach ([0] as $store) {
+
+        $resources = $em->getRepository(\App\Entity\Resource::class)->findAll();
+        /** @var \App\Entity\Resource $resource */
+        foreach ($resources as $resource) {
+            yield MenuItem::section($resource->getName(), 'fas fa-shopping-basket');
+
+            $stores = $em->getRepository(\App\Entity\Store::class)->findByResourceId($resource->getId());
+            /** @var \App\Entity\Store $store */
+            foreach ($stores as $store) {
                 $source = [
                     MenuItem::linkToCrud('Products', 'fas fa-th-list', Product::class)->setDefaultSort(['original_id' => 'ASC']),
                     MenuItem::linkToCrud('Categories', 'fas fa-th-list', Category::class)->setDefaultSort(['id' => 'ASC']),
                 ];
-                yield  MenuItem::subMenu('Default', 'fas fa-shopping-basket')->setSubItems($source);
+                yield  MenuItem::subMenu($store->getTitle(), 'fas fa-shopping-basket')->setSubItems($source);
             }
 
         }
@@ -73,11 +78,13 @@ class DashboardController extends AbstractDashboardController
      */
     public function generateAction(AdminContext $context): Response
     {
-        $retrieveProducts = new \App\Model\RetrieveProducts(
-            $this->get('doctrine')->getManagerForClass(Product::class),
-            $context->getUser()
-        );
+        $em = $this->get('doctrine')->getManager();
 
+        /* @TODO */
+        $resource = $em->getRepository(\App\Entity\Resource::class)
+            ->findByUserId($context->getUser()->getId())[0];
+
+        $retrieveProducts = new \App\Model\RetrieveProducts($em, $resource);
         $retrieveProducts->execute();
         $this->addFlash('success', 'Products are collected!');
 

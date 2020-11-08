@@ -33,10 +33,10 @@ class Store
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity=App\Entity\User::class)
+     * @ORM\ManyToOne(targetEntity=App\Entity\Resource::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private $resource;
 
     /**
      * @ORM\Column(type="datetime")
@@ -84,14 +84,14 @@ class Store
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getResource(): ?\App\Entity\Resource
     {
-        return $this->user;
+        return $this->resource;
     }
 
-    public function setUser(?User $user): self
+    public function setResource(?\App\Entity\Resource $resource): self
     {
-        $this->user = $user;
+        $this->resource = $resource;
 
         return $this;
     }
@@ -106,5 +106,10 @@ class Store
         $this->updated_at = $updated_at;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 }
