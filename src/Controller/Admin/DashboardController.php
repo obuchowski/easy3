@@ -57,11 +57,14 @@ class DashboardController extends AbstractDashboardController
             $stores = $em->getRepository(\App\Entity\Store::class)->findByResourceId($resource->getId());
             /** @var \App\Entity\Store $store */
             foreach ($stores as $store) {
-                $source = [
-                    MenuItem::linkToCrud('Products', 'fas fa-th-list', Product::class)->setDefaultSort(['original_id' => 'ASC']),
-                    MenuItem::linkToCrud('Categories', 'fas fa-th-list', Category::class)->setDefaultSort(['id' => 'ASC']),
-                ];
-                yield  MenuItem::subMenu($store->getTitle(), 'fas fa-shopping-basket')->setSubItems($source);
+                $productsItem = MenuItem::linkToCrud('Products', 'fas fa-th-list', Product::class)
+                    ->setDefaultSort(['original_id' => 'ASC']);
+                $productsItem->getAsDto()->setRouteParameter('storeId', $store->getId());
+                $categoriesItem = MenuItem::linkToCrud('Categories', 'fas fa-th-list', Category::class)->setDefaultSort(['id' => 'ASC']);
+                $categoriesItem->getAsDto()->setRouteParameter('storeId', $store->getId());
+
+                yield  MenuItem::subMenu($store->getTitle(), 'fas fa-shopping-basket')
+                    ->setSubItems([$productsItem, $categoriesItem]);
             }
 
         }

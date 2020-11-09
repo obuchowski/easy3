@@ -3,11 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -16,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 
 class ProductCrudController extends AbstractCrudController
@@ -24,6 +28,13 @@ class ProductCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Product::class;
+    }
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $queryBuilder->andWhere('entity.store = :store')->setParameter('store', $_GET['storeId']);
+        return $queryBuilder;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -34,7 +45,7 @@ class ProductCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_EDIT, 'Edit Product (#%entity_short_id%)')
             ->setPageTitle(Crud::PAGE_NEW, 'New Product')
             ->setPaginatorPageSize(30)
-            ->setSearchFields(['id', 'sku', 'name', 'price', 'status', 'visibility', 'type_id', 'options_json'])
+            ->setSearchFields(['id', 'sku', 'name', 'price'])
             ->overrideTemplate('crud/index', 'admin/customizations/product_list.html.twig');
     }
 
@@ -47,8 +58,7 @@ class ProductCrudController extends AbstractCrudController
         $actions->add(Crud::PAGE_INDEX, $generate);
 
         $actions
-            ->disable(Action::EDIT, Action::DELETE, Action::NEW,
-                Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_CONTINUE, Action::SAVE_AND_RETURN)
+            ->disable(Action::EDIT, Action::DELETE, Action::NEW, Action::SAVE_AND_ADD_ANOTHER, Action::SAVE_AND_CONTINUE, Action::SAVE_AND_RETURN)
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
 
         return $actions;
@@ -94,9 +104,6 @@ class ProductCrudController extends AbstractCrudController
             return [$id, $sku, $name, $visibility, $typeId, $price, $status];
         if (Crud::PAGE_DETAIL === $pageName)
             return [$id, $sku, $panel1, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
-        if (Crud::PAGE_NEW === $pageName)
-            return [$sku, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt, $optionsJson];
-        if (Crud::PAGE_EDIT === $pageName)
-            return [$sku, $name, $price, $status, $visibility, $typeId, $createdAt, $updatedAt];
+        return parent::configureFields($pageName);
     }
 }
