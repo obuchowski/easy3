@@ -7,7 +7,8 @@ framework:
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     session:
-        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+#        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+        handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
 
@@ -19,7 +20,7 @@ framework:
     fragments:
         hinclude_default_template: hinclude/default.html
 
-parameters:
-    redis_url: '%env(REDIS_URL)%'
-    redis_opts:
-        lazy: 0
+#parameters:
+#    redis_url: '%env(REDIS_URL)%'
+#    redis_opts:
+#        lazy: 0
