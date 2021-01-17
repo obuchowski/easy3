@@ -108,6 +108,12 @@
     "egulias/email-validator": {
         "version": "2.1.22"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
+    "laminas/laminas-code": {
+        "version": "4.0.0"
+    },
     "laminas/laminas-config": {
         "version": "3.3.0"
     },
@@ -116,6 +122,9 @@
     },
     "laminas/laminas-escaper": {
         "version": "2.6.1"
+    },
+    "laminas/laminas-eventmanager": {
+        "version": "3.3.0"
     },
     "laminas/laminas-http": {
         "version": "2.13.0"
